@@ -11,21 +11,21 @@ export const signup = async (req, res) => {
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            return res.status(400).json({ message: 'Invalid email format' });
+            return res.status(400).json({ error: 'Invalid email format' });
         };
 
         const existingUser = await User.findOne({ username });
         if (existingUser) {
-            return res.status(400).json({ message: 'Username already taken' });
+            return res.status(400).json({ error: 'Username already taken' });
         };
 
         const existingEmail = await User.findOne({ email });
         if (existingEmail) {
-            return res.status(400).json({ message: 'Email already taken' });
+            return res.status(400).json({ error: 'Email already taken' });
         };
 
         if (password.length < 6) {
-            return res.status(400).json({ message: 'Password must be at least 6 characters' });
+            return res.status(400).json({ error: 'Password must be at least 6 characters' });
         };
 
         // hash password
@@ -70,10 +70,14 @@ export const login = async (req, res) => {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
 
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+
         const isPasswordCorrect = await bcrypt.compare(password, user.password || "");
 
-        if (!user || !isPasswordCorrect) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ error: 'Invalid password' });
         }
 
         generateTokenAndSetCookie(user._id, res);

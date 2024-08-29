@@ -6,7 +6,7 @@ export const getNotfications = async (req, res) => {
 
     try {
 
-        if (!user) return res.status(401).json({ message: "You need to login first." });
+        if (!user) return res.status(401).json({ error: "You need to login first." });
 
         const notifications = await Notification.find({ to: user._id })
             .populate({
@@ -20,7 +20,7 @@ export const getNotfications = async (req, res) => {
 
     } catch (error) {
         console.log("Error in getNotfications function", error.message);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ error: "Internal server error." });
     }
 
 };
@@ -37,7 +37,7 @@ export const deleteNotification = async (req, res) => {
 
     } catch (error) {
         console.log("Error in deleteNotification function", error.message);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ error: "Internal server error." });
     }
 };
 
@@ -49,9 +49,9 @@ export const deleteOneNotification = async (req, res) => {
 
         const notification = await Notification.findById(req.params.id);
 
-        if (!notification) return res.status(404).json({ message: "Notification not found." });
+        if (!notification) return res.status(404).json({ error: "Notification not found." });
 
-        if (notification.to.toString() !== userId.toString()) return res.status(403).json({ message: "You are not authorized to delete this notification." });
+        if (notification.to.toString() !== userId.toString()) return res.status(403).json({ error: "You are not authorized to delete this notification." });
 
         await Notification.findByIdAndDelete(req.params.id);
 
@@ -59,7 +59,7 @@ export const deleteOneNotification = async (req, res) => {
 
     } catch (error) {
         console.log("Error in deleteOneNotification function", error.message);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ error: "Internal server error." });
     }
 
 }
