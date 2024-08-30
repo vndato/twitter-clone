@@ -16,6 +16,8 @@ export const getNotfications = async (req, res) => {
 
         await Notification.updateMany({ to: user._id }, { $set: { read: true } });
 
+        notifications.sort((a, b) => b.createdAt - a.createdAt);
+
         res.status(200).json(notifications);
 
     } catch (error) {
