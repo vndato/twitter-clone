@@ -175,6 +175,8 @@ export const getLikedPosts = async (req, res) => {
             select: "-password"
         });
 
+        likePosts.sort((a, b) => b.createdAt - a.createdAt);
+
         res.status(200).json(likePosts);
 
     } catch (error) {
